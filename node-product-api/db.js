@@ -46,10 +46,10 @@ async function updateProductById(id, name, description, value){
     try{
         const conn = await connect();
     
-        const query = `UPDATE products SET name = "${name}", description = "${description}", value = ${value} WHERE id = "${id}";`;
+        const query = `UPDATE products SET name = ${connection.escape(name)}, description = ${connection.escape(description)}, value = ${connection.escape(value)} WHERE id = ${connection.escape(id)};`;
         console.log(`Executando query: ${query}`);
         
-        const [rows] = await conn.execute(query);
+        const [rows] = await connection.execute(query);
         return rows;
     }catch(err){
         throw {code: 500, message: 'Erro inesperado ao tentar cadastrar usuário'};
@@ -59,7 +59,7 @@ async function updateProductById(id, name, description, value){
 async function deleteProductById(id){
     const conn = await connect();
     
-    const query = `DELETE FROM products WHERE id = "${id}";`;
+    const query = `DELETE FROM products WHERE id = ${connection.escape(id)};`;
     console.log(`Executando query: ${query}`);
 
     await connection.execute(query);
@@ -68,7 +68,7 @@ async function deleteProductById(id){
 async function insertProduct(name, description, value){
     const conn = await connect();
 
-    const query = `INSERT INTO products(id, name, description, value) VALUES ("${randomUUID()}", "${name}", "${description}", ${value});`;
+    const query = `INSERT INTO products(id, name, description, value) VALUES ("${randomUUID()}", ${connection.escape(name)}, ${connection.escape(description)}, ${connection.escape(value)});`;
     console.log(`Executando query: ${query}`);
 
     try{

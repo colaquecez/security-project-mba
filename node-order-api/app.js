@@ -1,4 +1,11 @@
-var http = require('http'); 
+const https = require('https');
+const fs = require('fs')
+
+const privateKey  = fs.readFileSync('./sslcert/selfsigned.key', 'utf8');
+const certificate = fs.readFileSync('./sslcert/selfsigned.crt', 'utf8');
+
+const credentials = {key: privateKey, cert: certificate};
+
 
 const express = require('express') 
 const app = express()
@@ -95,7 +102,9 @@ app.delete('/orders/:id', async (req, res, next) => {
     }
 });
 
+const httpsServer = https.createServer(credentials, app);
 
-app.listen(port, () => {
+httpsServer.listen(port, () => {
     console.log(`Listening at http://localhost:${port}`)
 });
+
